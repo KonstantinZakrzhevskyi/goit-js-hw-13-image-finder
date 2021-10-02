@@ -7,8 +7,6 @@ import { Notify, Loading } from 'notiflix';
 
 const { success, warning, failure, info } = Notify;
 
-
-// refs.searchFormBtn.addEventListener('submit', debounce(onSearchImages, 1000));
 refs.searchForm.addEventListener('submit', onSearchImages);
 refs.loadMore.addEventListener('click', onLoadMore);
 
@@ -17,44 +15,74 @@ function onSearchImages(e) {
   clearListItem();
 
   apiService.resetPage();
-  apiService.query = e.currentTarget.elements.query.value;
-  // apiService.query = e.target.value;
+  const value = e.currentTarget.elements.query.value
+  apiService.query = value;
 
-  // if (apiService.searchQuery.length < 1) {
-  //   refs.gallery.imageCardTpt.innerHTML = ''
-  //   return
-  // }
+  if (value === '') {
+    info('Enter your request!');
+    return
+  }
 
+  apiService.fetchGallery()
+    .then(hits => {
+     if (hits.length === 0) {
+    warning('Enter the correct query!');
+    return
+  }
+    const markup = buildListItemsTemplate(hits);
+      insertListItems(markup);
+      success('completed successfully!');
+    }).then(show).catch(fetchError);
+  e.currentTarget.elements.query.value = '';
+  
+};
+
+function onLoadMore() {
   apiService.fetchGallery().then(hits => {
     const markup = buildListItemsTemplate(hits);
     insertListItems(markup);
-  });
-  e.currentTarget.elements.query.value = '';
-  
-}
 
-
-function onLoadMore() {
-  apiService.fetchGallery().then( hits => {
-    const markup = buildListItemsTemplate(hits);
-    insertListItems(markup);
-    scroll()
-  });
-}
-function insertListItems(items) {
-  refs.gallery.insertAdjacentHTML('beforeend', items);
-}
-function buildListItemsTemplate(items) {
-  return imageCardTpt(items);
-}
-
-function scroll() {
-  refs.loadMore.scrollIntoView({
+const stats = document.getElementById('stats');
+stats.scrollIntoView({
   behavior: 'smooth',
   block: 'end',
 });
+
+// window.scrollTo( 1000, 1000 );
+
+// 
+// window.scrollTo({
+//     top:  1000,
+//   behavior: "smooth",
+//     block: 'start',
+// });
+
+ });
+    
+}
+
+function insertListItems(items) {
+  refs.gallery.insertAdjacentHTML('beforeend', items);
+}
+
+function buildListItemsTemplate(items) {
+  return imageCardTpt(items);
+};
+
+function show() {
+refs.loadMore.classList.remove('is-hidden');
 };
 
 function clearListItem() {
   refs.gallery.innerHTML = '';
-}
+};
+
+function fetchError(err) {
+  failure('Error!!! Request not found!')
+};
+
+
+
+
+
+
