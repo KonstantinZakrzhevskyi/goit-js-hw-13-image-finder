@@ -41,23 +41,14 @@ function onLoadMore() {
   apiService.fetchGallery().then(hits => {
     const markup = buildListItemsTemplate(hits);
     insertListItems(markup);
-
-
-//     window.scrollTo(0, 1000);
-    
-//     window.scrollTo({
-//     top:  1000,
-//   behavior: "smooth",
-// });
-
-const stats = document.getElementById(hits[0].id);
-stats.scrollIntoView({
-  behavior: 'smooth',
-  block: 'start',
-});
-
- });
-    
+    const img = document.getElementById(hits[0].id);
+    img.onload = () => {
+      img.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start',
+      });
+    };
+  });
 }
 
 function insertListItems(items) {
