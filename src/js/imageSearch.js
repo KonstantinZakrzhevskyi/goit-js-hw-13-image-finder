@@ -2,7 +2,7 @@ import apiService from './apiService';
 import refs from './refs';
 import imageCardTpt from '../templates/imageCardTpt.hbs';
 
-import { debounce } from 'lodash';
+// import { debounce } from 'lodash';
 import { Notify, Loading } from 'notiflix';
 
 const { success, warning, failure, info } = Notify;
@@ -42,20 +42,19 @@ function onLoadMore() {
     const markup = buildListItemsTemplate(hits);
     insertListItems(markup);
 
-const stats = document.getElementById('stats');
-stats.scrollIntoView({
-  behavior: 'smooth',
-  block: 'end',
-});
 
-// window.scrollTo( 1000, 1000 );
-
-// 
-// window.scrollTo({
+//     window.scrollTo(0, 1000);
+    
+//     window.scrollTo({
 //     top:  1000,
 //   behavior: "smooth",
-//     block: 'start',
 // });
+
+const stats = document.getElementById(hits[0].id);
+stats.scrollIntoView({
+  behavior: 'smooth',
+  block: 'start',
+});
 
  });
     
